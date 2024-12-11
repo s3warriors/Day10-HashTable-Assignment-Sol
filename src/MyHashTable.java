@@ -1,14 +1,14 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MyHashTable<K, V> {
     private final int numBuckets;
-    private final ArrayList<MyMapNode<K, V>> bucketArray;
+    private final LinkedList<MyMapNode<K, V>>[] bucketArray;
 
     public MyHashTable() {
-        this.numBuckets = 10;
-        this.bucketArray = new ArrayList<>(numBuckets);
+        this.numBuckets = 10; // Default number of buckets
+        this.bucketArray = new LinkedList[numBuckets];
         for (int i = 0; i < numBuckets; i++) {
-            bucketArray.add(null);
+            bucketArray[i] = new LinkedList<>();
         }
     }
 
@@ -17,33 +17,44 @@ public class MyHashTable<K, V> {
         return hashCode % numBuckets;
     }
 
-    public V get(K key) {
-        int index = getBucketIndex(key);
-        MyMapNode<K, V> head = bucketArray.get(index);
-        while (head != null) {
-            if (head.key.equals(key)) {
-                return head.value;
-            }
-            head = head.next;
-        }
-        return null;
-    }
-
+    // Add or update key-value pair in the hash table
     public void put(K key, V value) {
         int index = getBucketIndex(key);
-        MyMapNode<K, V> head = bucketArray.get(index);
+        LinkedList<MyMapNode<K, V>> bucket = bucketArray[index];
 
-        while (head != null) {
-            if (head.key.equals(key)) {
-                head.value = value;
+        for (MyMapNode<K, V> node : bucket) {
+            if (node.key.equals(key)) {
+                node.setValue(value); // Update value if key exists
                 return;
             }
-            head = head.next;
         }
 
-        head = bucketArray.get(index);
-        MyMapNode<K, V> newNode = new MyMapNode<>(key, value);
-        newNode.next = head;
-        bucketArray.set(index, newNode);
+        bucket.add(new MyMapNode<>(key, value)); // Add new key-value pair
+    }
+
+    // Retrieve value by key
+    public V get(K key) {
+        int index = getBucketIndex(key);
+        LinkedList<MyMapNode<K, V>> bucket = bucketArray[index];
+
+        for (MyMapNode<K, V> node : bucket) {
+            if (node.key.equals(key)) {
+                return node.getValue();
+            }
+        }
+        return null; // Key not found
+    }
+
+    // Remove key-value pair
+    public void remove(K key) {
+        int index = getBucketIndex(key);
+        LinkedList<MyMapNode<K, V>> bucket = bucketArray[index];
+
+        for (MyMapNode<K, V> node : bucket) {
+            if (node.key.equals(key)) {
+                bucket.remove(node); // Remove node from linked list
+                return;
+            }
+        }
     }
 }

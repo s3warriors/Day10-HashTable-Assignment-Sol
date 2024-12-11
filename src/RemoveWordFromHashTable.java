@@ -1,4 +1,4 @@
-public class ParagraphWordFrequency {
+public class RemoveWordFromHashTable {
     public static void main(String[] args) {
         MyHashTable<String, Integer> hashTable = new MyHashTable<>();
 
@@ -20,6 +20,13 @@ public class ParagraphWordFrequency {
         for (String word : words) {
             System.out.println(word + ": " + hashTable.get(word));
         }
+
+        hashTable.remove("avoidable");
+        System.out.println("\nAfter removing 'avoidable':");
+        for (String word : words) {
+            if (hashTable.get(word) != null) {
+                System.out.println(word + ": " + hashTable.get(word));
+            }
+        }
     }
 }
-
